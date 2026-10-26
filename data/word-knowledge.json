@@ -1,0 +1,248 @@
+[
+  {
+    "word": "sky",
+    "category": "nouns",
+    "related": [
+      {
+        "word": "blue",
+        "category": "adjectives",
+        "occurrences": 2,
+        "sources": [
+          "direct",
+          "sentence"
+        ],
+        "examples": [
+          "The sky is blue."
+        ],
+        "observationIds": [
+          "seed:direct:sky:nouns",
+          "seed:sentence:the sky is blue."
+        ]
+      },
+      {
+        "word": "beautiful",
+        "category": "adjectives",
+        "occurrences": 2,
+        "sources": [
+          "direct",
+          "sentence"
+        ],
+        "examples": [
+          "The sky is beautiful."
+        ],
+        "observationIds": [
+          "seed:direct:sky:nouns",
+          "seed:sentence:the sky is beautiful."
+        ]
+      }
+    ]
+  },
+  {
+    "word": "dog",
+    "category": "nouns",
+    "related": [
+      {
+        "word": "animal",
+        "category": "nouns",
+        "occurrences": 2,
+        "sources": [
+          "direct",
+          "sentence"
+        ],
+        "examples": [
+          "The dog is an animal."
+        ],
+        "observationIds": [
+          "seed:direct:dog:nouns",
+          "seed:sentence:the dog is an animal."
+        ]
+      },
+      {
+        "word": "beautiful",
+        "category": "adjectives",
+        "occurrences": 2,
+        "sources": [
+          "direct",
+          "sentence"
+        ],
+        "examples": [
+          "The dog is beautiful."
+        ],
+        "observationIds": [
+          "seed:direct:dog:nouns",
+          "seed:sentence:the dog is beautiful."
+        ]
+      },
+      {
+        "word": "dangerous",
+        "category": "adjectives",
+        "occurrences": 2,
+        "sources": [
+          "direct",
+          "sentence"
+        ],
+        "examples": [
+          "The dog is dangerous."
+        ],
+        "observationIds": [
+          "seed:direct:dog:nouns",
+          "seed:sentence:the dog is dangerous."
+        ]
+      }
+    ]
+  },
+  {
+    "word": "cat",
+    "category": "nouns",
+    "related": [
+      {
+        "word": "small",
+        "category": "adjectives",
+        "occurrences": 2,
+        "sources": [
+          "direct",
+          "sentence"
+        ],
+        "examples": [
+          "The cat is small."
+        ],
+        "observationIds": [
+          "seed:direct:cat:nouns",
+          "seed:sentence:the cat is small."
+        ]
+      }
+    ]
+  },
+  {
+    "word": "house",
+    "category": "nouns",
+    "related": [
+      {
+        "word": "big",
+        "category": "adjectives",
+        "occurrences": 2,
+        "sources": [
+          "direct",
+          "sentence"
+        ],
+        "examples": [
+          "The house is big."
+        ],
+        "observationIds": [
+          "seed:direct:house:nouns",
+          "seed:sentence:the house is big."
+        ]
+      }
+    ]
+  },
+  {
+    "word": "car",
+    "category": "nouns",
+    "related": [
+      {
+        "word": "fast",
+        "category": "adjectives",
+        "occurrences": 2,
+        "sources": [
+          "direct",
+          "sentence"
+        ],
+        "examples": [
+          "The car is fast."
+        ],
+        "observationIds": [
+          "seed:direct:car:nouns",
+          "seed:sentence:the car is fast."
+        ]
+      }
+    ]
+  },
+  {
+    "word": "water",
+    "category": "nouns",
+    "related": [
+      {
+        "word": "cold",
+        "category": "adjectives",
+        "occurrences": 2,
+        "sources": [
+          "direct",
+          "sentence"
+        ],
+        "examples": [
+          "The water is cold."
+        ],
+        "observationIds": [
+          "seed:direct:water:nouns",
+          "seed:sentence:the water is cold."
+        ]
+      }
+    ]
+  },
+  {
+    "word": "sun",
+    "category": "nouns",
+    "related": [
+      {
+        "word": "bright",
+        "category": "adjectives",
+        "occurrences": 2,
+        "sources": [
+          "direct",
+          "sentence"
+        ],
+        "examples": [
+          "The sun is bright."
+        ],
+        "observationIds": [
+          "seed:direct:sun:nouns",
+          "seed:sentence:the sun is bright."
+        ]
+      }
+    ]
+  },
+  {
+    "word": "teacher",
+    "category": "nouns",
+    "related": [
+      {
+        "word": "happy",
+        "category": "adjectives",
+        "occurrences": 2,
+        "sources": [
+          "direct",
+          "sentence"
+        ],
+        "examples": [
+          "The teacher is happy."
+        ],
+        "observationIds": [
+          "seed:direct:teacher:nouns",
+          "seed:sentence:the teacher is happy."
+        ]
+      }
+    ]
+  },
+  {
+    "word": "computer",
+    "category": "nouns",
+    "related": [
+      {
+        "word": "new",
+        "category": "adjectives",
+        "occurrences": 2,
+        "sources": [
+          "direct",
+          "sentence"
+        ],
+        "examples": [
+          "The computer is new."
+        ],
+        "observationIds": [
+          "seed:direct:computer:nouns",
+          "seed:sentence:the computer is new."
+        ]
+      }
+    ]
+  }
+]

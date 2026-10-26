@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="ETMW Human learns sentence array sequences from examples and rebuilds new sentences from them."
+    />
+    <title>ETMW Human · Learn and Generate</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="ETMW Human home">
+          <span class="brand-mark">EH</span>
+          <span class="brand-copy">
+            <strong>etmw human</strong>
+            <span>Learn sequences, rebuild sentences</span>
+          </span>
+        </a>
+        <div class="status-pill" id="api-status" role="status">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="api-status-text">Connecting</span>
+        </div>
+      </header>
+
+      <main>
+        <section class="panel" aria-labelledby="learn-title">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Step one</p>
+              <h2 id="learn-title">Add a sentence</h2>
+              <p class="panel-copy">
+                Contractions stay together, multiword arrays are matched as one
+                part, and unknown words are reported instead of guessed.
+              </p>
+            </div>
+            <span class="count-pill" id="rule-count">Loading rules</span>
+          </div>
+
+          <form id="learn-form">
+            <div class="field-heading">
+              <label for="sentence">Sentence</label>
+              <span class="character-count" id="character-count">0 / 2000</span>
+            </div>
+            <textarea
+              id="sentence"
+              name="sentence"
+              rows="3"
+              maxlength="2000"
+              spellcheck="false"
+              autocomplete="off"
+              placeholder="Type an English sentence…"
+            >I'm a dog.</textarea>
+
+            <div class="samples" aria-label="Example sentences">
+              <button class="sample" type="button" data-sentence="I'm a dog.">I'm a dog.</button>
+              <button class="sample" type="button" data-sentence="They are in the garden.">They are in the garden.</button>
+              <button class="sample" type="button" data-sentence="He is very happy.">He is very happy.</button>
+              <button class="sample" type="button" data-sentence="I want to read a book.">I want to read a book.</button>
+              <button class="sample" type="button" data-sentence="We should help each other.">We should help each other.</button>
+              <button class="sample" type="button" data-sentence="Don't go there.">Don't go there.</button>
+            </div>
+
+            <div class="form-actions">
+              <button class="primary-button" id="learn-button" type="submit">
+                Learn sentence
+              </button>
+              <button class="ghost-button" id="clear-button" type="button">
+                Clear
+              </button>
+              <span class="shortcut-hint">
+                <kbd>Ctrl</kbd><span>or</span><kbd>⌘</kbd><span>+</span><kbd>Enter</kbd>
+              </span>
+            </div>
+          </form>
+
+          <div class="error-banner" id="learn-error" role="alert" hidden></div>
+
+          <div class="learn-result" id="learn-result" aria-live="polite" hidden>
+            <div class="learn-result-head">
+              <div>
+                <p class="eyebrow">Observation</p>
+                <h3>Discovered sequence</h3>
+              </div>
+              <p class="learning-input" id="learning-input"></p>
+            </div>
+            <div class="learning-tokens" id="learning-tokens"></div>
+            <div class="learning-notes" id="learning-notes"></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="generate-title">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Step two</p>
+              <h2 id="generate-title">Generate a sentence</h2>
+              <p class="panel-copy">
+                Pick a learned rule. Leave every position on Random, or choose
+                one word from each array. Only array membership is checked.
+              </p>
+            </div>
+            <div class="header-actions">
+              <button class="ghost-button" id="refresh-rules" type="button">
+                Refresh
+              </button>
+              <button class="ghost-button" id="surprise-button" type="button">
+                Surprise me
+              </button>
+            </div>
+          </div>
+
+          <p class="empty-state" id="generate-empty" hidden>
+            No learned rules yet. Add a sentence first.
+          </p>
+
+          <div class="generate-workspace" id="generate-workspace" hidden>
+            <div class="rule-picker-row">
+              <label class="field-label" for="rule-select">Learned rule</label>
+              <select id="rule-select"></select>
+              <span class="rule-meta" id="rule-meta"></span>
+            </div>
+
+            <div class="pattern-strip" id="generation-pattern"></div>
+            <div class="rule-examples" id="rule-examples"></div>
+
+            <div class="generation-fields" id="generation-fields"></div>
+
+            <div class="generation-controls">
+              <label class="seed-field" for="generation-seed">
+                Seed
+                <input id="generation-seed" type="number" step="1" placeholder="optional" />
+              </label>
+              <button class="primary-button" id="generate-button" type="button">
+                Generate sentence
+              </button>
+              <button class="ghost-button" id="generate-random-button" type="button">
+                Random choices
+              </button>
+            </div>
+
+            <div class="error-banner" id="generation-error" role="alert" hidden></div>
+
+            <div class="generation-output" id="generation-output" aria-live="polite" hidden>
+              <p class="eyebrow">Assembled output</p>
+              <p class="generation-sentence" id="generation-sentence"></p>
+              <div class="generation-choices" id="generation-choices"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>ETMW Human</span>
+        <span>Rules persist in data/learned-rules.json</span>
+        <a href="/health">API health</a>
+      </footer>
+    </div>
+  </body>
+</html>

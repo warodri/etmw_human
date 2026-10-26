@@ -1,0 +1,989 @@
+[
+  {
+    "id": "rule_001",
+    "pattern": [
+      "contractions",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "I'm a dog.",
+      "It’s a dog."
+    ],
+    "count": 2,
+    "separators": [
+      "",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_002",
+    "pattern": [
+      "personalPronouns",
+      "auxiliaryVerbs",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "I am a dog."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_003",
+    "pattern": [
+      "personalPronouns",
+      "mainVerbs",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "I am a dog."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_004",
+    "pattern": [
+      "personalPronouns",
+      "auxiliaryVerbs",
+      "adjectives"
+    ],
+    "examples": [
+      "She is happy.",
+      "I am happy."
+    ],
+    "count": 2,
+    "separators": [
+      "",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_005",
+    "pattern": [
+      "personalPronouns",
+      "mainVerbs",
+      "adjectives"
+    ],
+    "examples": [
+      "She is happy.",
+      "I am happy."
+    ],
+    "count": 2,
+    "separators": [
+      "",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_006",
+    "pattern": [
+      "articles",
+      "adjectives",
+      "nouns",
+      "auxiliaryVerbs",
+      "adjectives"
+    ],
+    "examples": [
+      "The big dog is happy."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_007",
+    "pattern": [
+      "articles",
+      "adjectives",
+      "nouns",
+      "mainVerbs",
+      "adjectives"
+    ],
+    "examples": [
+      "The big dog is happy."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_008",
+    "pattern": [
+      "personalPronouns",
+      "auxiliaryVerbs",
+      "complexPrepositions",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "I am in front of the house."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_009",
+    "pattern": [
+      "personalPronouns",
+      "mainVerbs",
+      "complexPrepositions",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "I am in front of the house."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_010",
+    "pattern": [
+      "articles",
+      "nouns",
+      "modalVerbs",
+      "mainVerbs",
+      "adverbs"
+    ],
+    "examples": [
+      "The dog can run quickly."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_011",
+    "pattern": [
+      "personalPronouns",
+      "modalVerbs",
+      "mainVerbs",
+      "objectPronouns",
+      "adverbs"
+    ],
+    "examples": [
+      "She will visit us tomorrow."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_012",
+    "pattern": [
+      "personalPronouns",
+      "auxiliaryVerbs",
+      "prepositions",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "They are in the garden."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_013",
+    "pattern": [
+      "personalPronouns",
+      "auxiliaryVerbs",
+      "particles",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "They are in the garden."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_014",
+    "pattern": [
+      "personalPronouns",
+      "mainVerbs",
+      "prepositions",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "They are in the garden."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_015",
+    "pattern": [
+      "personalPronouns",
+      "mainVerbs",
+      "particles",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "They are in the garden."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_016",
+    "pattern": [
+      "personalPronouns",
+      "auxiliaryVerbs",
+      "degreeAdverbs",
+      "adjectives"
+    ],
+    "examples": [
+      "He is very happy."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_017",
+    "pattern": [
+      "personalPronouns",
+      "auxiliaryVerbs",
+      "adverbs",
+      "adjectives"
+    ],
+    "examples": [
+      "He is very happy."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_018",
+    "pattern": [
+      "personalPronouns",
+      "mainVerbs",
+      "degreeAdverbs",
+      "adjectives"
+    ],
+    "examples": [
+      "He is very happy."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_019",
+    "pattern": [
+      "personalPronouns",
+      "mainVerbs",
+      "adverbs",
+      "adjectives"
+    ],
+    "examples": [
+      "He is very happy."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_020",
+    "pattern": [
+      "demonstrativePronouns",
+      "auxiliaryVerbs",
+      "possessiveDeterminers",
+      "nouns"
+    ],
+    "examples": [
+      "This is my book."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_021",
+    "pattern": [
+      "demonstrativePronouns",
+      "mainVerbs",
+      "possessiveDeterminers",
+      "nouns"
+    ],
+    "examples": [
+      "This is my book."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_022",
+    "pattern": [
+      "demonstrativeDeterminers",
+      "auxiliaryVerbs",
+      "possessiveDeterminers",
+      "nouns"
+    ],
+    "examples": [
+      "This is my book."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_023",
+    "pattern": [
+      "demonstrativeDeterminers",
+      "mainVerbs",
+      "possessiveDeterminers",
+      "nouns"
+    ],
+    "examples": [
+      "This is my book."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_024",
+    "pattern": [
+      "personalPronouns",
+      "auxiliaryVerbs",
+      "negations",
+      "mainVerbs",
+      "nouns"
+    ],
+    "examples": [
+      "I do not drink coffee."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_025",
+    "pattern": [
+      "personalPronouns",
+      "mainVerbs",
+      "negations",
+      "mainVerbs",
+      "nouns"
+    ],
+    "examples": [
+      "I do not drink coffee."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_026",
+    "pattern": [
+      "personalPronouns",
+      "modalVerbs",
+      "mainVerbs",
+      "possessiveDeterminers",
+      "nouns"
+    ],
+    "examples": [
+      "You should study your lesson."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_027",
+    "pattern": [
+      "objectPronouns",
+      "modalVerbs",
+      "mainVerbs",
+      "possessiveDeterminers",
+      "nouns"
+    ],
+    "examples": [
+      "You should study your lesson."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_028",
+    "pattern": [
+      "personalPronouns",
+      "frequencyAdverbs",
+      "mainVerbs",
+      "nouns"
+    ],
+    "examples": [
+      "I always drink tea."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_029",
+    "pattern": [
+      "articles",
+      "nouns",
+      "auxiliaryVerbs",
+      "prepositions",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "The cat is under the table."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_030",
+    "pattern": [
+      "articles",
+      "nouns",
+      "mainVerbs",
+      "prepositions",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "The cat is under the table."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_031",
+    "pattern": [
+      "personalPronouns",
+      "mainVerbs",
+      "prepositions",
+      "mainVerbs",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "I want to read a book."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_032",
+    "pattern": [
+      "personalPronouns",
+      "mainVerbs",
+      "particles",
+      "mainVerbs",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "I want to read a book."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_033",
+    "pattern": [
+      "personalPronouns",
+      "mainVerbs",
+      "infinitiveMarkers",
+      "mainVerbs",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "I want to read a book."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_034",
+    "pattern": [
+      "personalPronouns",
+      "modalVerbs",
+      "nouns",
+      "reciprocalPronouns"
+    ],
+    "examples": [
+      "We should help each other."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_035",
+    "pattern": [
+      "personalPronouns",
+      "modalVerbs",
+      "mainVerbs",
+      "reciprocalPronouns"
+    ],
+    "examples": [
+      "We should help each other."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_036",
+    "pattern": [
+      "contractions",
+      "mainVerbs",
+      "locativeAdverbs"
+    ],
+    "examples": [
+      "Don't go there."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_037",
+    "pattern": [
+      "articles",
+      "nouns",
+      "auxiliaryVerbs",
+      "adjectives"
+    ],
+    "examples": [
+      "The sky is blue.",
+      "The sky is beautiful.",
+      "The dog is dangerous.",
+      "The dog is beautiful.",
+      "The cat is small.",
+      "The house is big.",
+      "The car is fast.",
+      "The water is cold.",
+      "The sun is bright.",
+      "The teacher is happy.",
+      "The computer is new."
+    ],
+    "count": 11,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_038",
+    "pattern": [
+      "articles",
+      "nouns",
+      "mainVerbs",
+      "adjectives"
+    ],
+    "examples": [
+      "The sky is blue.",
+      "The sky is beautiful.",
+      "The dog is dangerous.",
+      "The dog is beautiful.",
+      "The cat is small.",
+      "The house is big.",
+      "The car is fast.",
+      "The water is cold.",
+      "The sun is bright.",
+      "The teacher is happy.",
+      "The computer is new."
+    ],
+    "count": 11,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_039",
+    "pattern": [
+      "articles",
+      "nouns",
+      "auxiliaryVerbs",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "The dog is an animal."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_040",
+    "pattern": [
+      "articles",
+      "nouns",
+      "mainVerbs",
+      "articles",
+      "nouns"
+    ],
+    "examples": [
+      "The dog is an animal."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_041",
+    "pattern": [
+      "articles",
+      "nouns",
+      "auxiliaryVerbs",
+      "adverbs"
+    ],
+    "examples": [
+      "The car is fast."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_042",
+    "pattern": [
+      "articles",
+      "nouns",
+      "mainVerbs",
+      "adverbs"
+    ],
+    "examples": [
+      "The car is fast."
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "."
+    ]
+  },
+  {
+    "id": "rule_043",
+    "pattern": [
+      "modalVerbs",
+      "personalPronouns",
+      "nouns",
+      "objectPronouns"
+    ],
+    "examples": [
+      "Can you help me?"
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "?"
+    ]
+  },
+  {
+    "id": "rule_044",
+    "pattern": [
+      "modalVerbs",
+      "personalPronouns",
+      "mainVerbs",
+      "objectPronouns"
+    ],
+    "examples": [
+      "Can you help me?"
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "?"
+    ]
+  },
+  {
+    "id": "rule_045",
+    "pattern": [
+      "modalVerbs",
+      "objectPronouns",
+      "nouns",
+      "objectPronouns"
+    ],
+    "examples": [
+      "Can you help me?"
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "?"
+    ]
+  },
+  {
+    "id": "rule_046",
+    "pattern": [
+      "modalVerbs",
+      "objectPronouns",
+      "mainVerbs",
+      "objectPronouns"
+    ],
+    "examples": [
+      "Can you help me?"
+    ],
+    "count": 1,
+    "separators": [
+      "",
+      " ",
+      " ",
+      " ",
+      "?"
+    ]
+  }
+]

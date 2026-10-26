@@ -1,0 +1,104 @@
+{
+  "sentences": [
+    "The sky is blue.",
+    "The sky is beautiful.",
+    "The dog is dangerous.",
+    "The dog is beautiful.",
+    "The dog is an animal.",
+    "The cat is small.",
+    "The house is big.",
+    "The car is fast.",
+    "The water is cold.",
+    "The sun is bright.",
+    "The teacher is happy.",
+    "The computer is new.",
+    "The dog can run quickly.",
+    "She will visit us tomorrow.",
+    "I am happy.",
+    "They are in the garden.",
+    "I want to read a book.",
+    "We should help each other.",
+    "I always drink tea.",
+    "He is very happy.",
+    "The cat is under the table.",
+    "Don't go there.",
+    "Can you help me?"
+  ],
+  "directRelationships": [
+    {
+      "word": "sky",
+      "category": "nouns",
+      "observationId": "seed:direct:sky:nouns",
+      "related": [
+        { "word": "blue", "category": "adjectives" },
+        { "word": "beautiful", "category": "adjectives" }
+      ]
+    },
+    {
+      "word": "dog",
+      "category": "nouns",
+      "observationId": "seed:direct:dog:nouns",
+      "related": [
+        { "word": "animal", "category": "nouns" },
+        { "word": "beautiful", "category": "adjectives" },
+        { "word": "dangerous", "category": "adjectives" }
+      ]
+    },
+    {
+      "word": "cat",
+      "category": "nouns",
+      "observationId": "seed:direct:cat:nouns",
+      "related": [
+        { "word": "small", "category": "adjectives" }
+      ]
+    },
+    {
+      "word": "house",
+      "category": "nouns",
+      "observationId": "seed:direct:house:nouns",
+      "related": [
+        { "word": "big", "category": "adjectives" }
+      ]
+    },
+    {
+      "word": "car",
+      "category": "nouns",
+      "observationId": "seed:direct:car:nouns",
+      "related": [
+        { "word": "fast", "category": "adjectives" }
+      ]
+    },
+    {
+      "word": "water",
+      "category": "nouns",
+      "observationId": "seed:direct:water:nouns",
+      "related": [
+        { "word": "cold", "category": "adjectives" }
+      ]
+    },
+    {
+      "word": "sun",
+      "category": "nouns",
+      "observationId": "seed:direct:sun:nouns",
+      "related": [
+        { "word": "bright", "category": "adjectives" }
+      ]
+    },
+    {
+      "word": "teacher",
+      "category": "nouns",
+      "observationId": "seed:direct:teacher:nouns",
+      "related": [
+        { "word": "happy", "category": "adjectives" }
+      ]
+    },
+    {
+      "word": "computer",
+      "category": "nouns",
+      "observationId": "seed:direct:computer:nouns",
+      "related": [
+        { "word": "new", "category": "adjectives" }
+      ]
+    }
+  ]
+}
