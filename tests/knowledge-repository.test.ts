@@ -169,6 +169,67 @@ describe("JsonKnowledgeRepository", () => {
     expect(dog[0]?.related[0]?.word).toBe("animal");
   });
 
+  it("persists name and system markers with metadata across reload", async () => {
+    const repository = new JsonKnowledgeRepository(filePath);
+    await repository.upsertRelationships([
+      {
+        focusWord: "hilton",
+        focusCategory: "name",
+        relatedWord: "hotel",
+        relatedCategory: "system",
+        source: "direct",
+        observationId: "hilton-system"
+      },
+      {
+        focusWord: "hilton",
+        focusCategory: "name",
+        relatedWord: "paris",
+        relatedCategory: "name",
+        source: "direct",
+        observationId: "hilton-name"
+      },
+      {
+        focusWord: "hotel",
+        focusCategory: "nouns",
+        relatedWord: "big",
+        relatedCategory: "adjectives",
+        source: "sentence",
+        example: "The hotel is big.",
+        observationId: "hotel-big"
+      }
+    ]);
+
+    const reloaded = new JsonKnowledgeRepository(filePath);
+    const hilton = await reloaded.getByWord("hilton");
+    const hotel = await reloaded.getByWord("hotel");
+
+    expect(hilton[0]?.category).toBe("name");
+    expect(hilton[0]?.related).toEqual([
+      expect.objectContaining({
+        word: "hotel",
+        category: "system",
+        occurrences: 1,
+        sources: ["direct"],
+        observationIds: ["hilton-system"]
+      }),
+      expect.objectContaining({
+        word: "paris",
+        category: "name",
+        occurrences: 1,
+        sources: ["direct"],
+        observationIds: ["hilton-name"]
+      })
+    ]);
+    expect(hotel[0]?.related[0]).toMatchObject({
+      word: "big",
+      category: "adjectives",
+      occurrences: 1,
+      sources: ["sentence"],
+      examples: ["The hotel is big."],
+      observationIds: ["hotel-big"]
+    });
+  });
+
   it("creates the storage file on first read", async () => {
     const repository = new JsonKnowledgeRepository(filePath);
     expect(await repository.getByWord("sky")).toEqual([]);

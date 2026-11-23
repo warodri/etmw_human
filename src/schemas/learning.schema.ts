@@ -41,3 +41,7 @@ export const generateRequestSchema = z.object({
 export const generateRandomRequestSchema = z.object({
   seed: z.number().int().optional()
 });
+
+export const resetLearningSchema = z.object({
+  confirm: z.literal("RESET")
+});

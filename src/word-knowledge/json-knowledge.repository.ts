@@ -2,12 +2,13 @@ import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { VocabularyCategory } from "../data/vocabulary.js";
 import { normalizePhrase } from "../sentence-learning/category-matcher.js";
 import { KnowledgeError } from "./errors.js";
 import type { KnowledgeRepository } from "./knowledge-repository.js";
 import type {
+  KnowledgeEntryCategory,
   KnowledgeQueryOptions,
+  KnowledgeRelatedCategory,
   KnowledgeRelationship,
   KnowledgeRelationshipInput,
   KnowledgeSource,
@@ -61,6 +62,12 @@ function parseStoredKnowledge(value: unknown): WordKnowledge[] {
 
     if (typeof category !== "string" || category.length === 0) {
       throw new Error(`Invalid focus category for "${word}".`);
+    }
+
+    if (category === "system") {
+      throw new Error(
+        `Invalid top-level knowledge category "system" for "${word}".`
+      );
     }
 
     if (!Array.isArray(related)) {
@@ -132,7 +139,7 @@ function parseStoredKnowledge(value: unknown): WordKnowledge[] {
 
       return {
         word: relatedWord,
-        category: relatedCategory as VocabularyCategory,
+        category: relatedCategory as KnowledgeRelatedCategory,
         occurrences,
         sources: Array.from(new Set(sources)),
         examples: [...examples],
@@ -144,7 +151,7 @@ function parseStoredKnowledge(value: unknown): WordKnowledge[] {
 
     return {
       word,
-      category: category as VocabularyCategory,
+      category: category as KnowledgeEntryCategory,
       related: parsedRelated
     } satisfies WordKnowledge;
   });
@@ -177,7 +184,7 @@ function addExample(
 
 function toRelationship(
   focusWord: string,
-  focusCategory: VocabularyCategory,
+  focusCategory: KnowledgeEntryCategory,
   related: RelatedWord,
   action: KnowledgeRelationship["action"]
 ): KnowledgeRelationship {
@@ -213,7 +220,7 @@ export class JsonKnowledgeRepository implements KnowledgeRepository {
 
   async getByWordAndCategory(
     word: string,
-    category: VocabularyCategory
+    category: KnowledgeEntryCategory
   ): Promise<WordKnowledge | undefined> {
     const entries = await this.ensureLoaded();
     const normalized = normalizePhrase(word);
@@ -242,6 +249,13 @@ export class JsonKnowledgeRepository implements KnowledgeRepository {
         return !options.category || entry.category === options.category;
       })
       .map(cloneEntry);
+  }
+
+  async clear(): Promise<void> {
+    return this.enqueue(async () => {
+      await this.writeEntries([]);
+      this.entries = [];
+    });
   }
 
   async upsertRelationships(

@@ -42,6 +42,10 @@ class FakeKnowledgeRepository implements KnowledgeRepository {
   async list(): Promise<WordKnowledge[]> {
     return structuredClone(this.entries);
   }
+
+  async clear(): Promise<void> {
+    this.entries.splice(0, this.entries.length);
+  }
 }
 
 function related(
@@ -74,6 +78,39 @@ const dogKnowledge: WordKnowledge[] = [
       related("dangerous", "adjectives"),
       related("beautiful", "adjectives")
     ]
+  }
+];
+
+const hotelWithSystem: WordKnowledge[] = [
+  {
+    word: "hotel",
+    category: "nouns",
+    related: [
+      related("big", "adjectives"),
+      related("building", "nouns"),
+      related("building", "system")
+    ]
+  },
+  {
+    word: "building",
+    category: "nouns",
+    related: [related("beautiful", "adjectives")]
+  }
+];
+
+const hotelWithName: WordKnowledge[] = [
+  {
+    word: "hotel",
+    category: "nouns",
+    related: [related("woman", "name")]
+  }
+];
+
+const hiltonNameOnly: WordKnowledge[] = [
+  {
+    word: "hilton",
+    category: "name",
+    related: [related("paris", "name")]
   }
 ];
 
@@ -203,5 +240,54 @@ describe("knowledge-guided generation", () => {
     const strings = result.sentences.map((sentence) => sentence.sentence);
 
     expect(new Set(strings).size).toBe(strings.length);
+  });
+
+  it("uses inherited ordinary relationships", async () => {
+    const result = await makeGenerator(hotelWithSystem).generate("hotel", {
+      seed: 1,
+      maxSentences: 20
+    });
+    const beautiful = result.sentences.find(
+      (sentence) => sentence.relatedWord === "beautiful"
+    );
+
+    expect(beautiful).toMatchObject({
+      relatedCategory: "adjectives",
+      relatedSlotCategory: "adjectives",
+      relatedOrigin: "inherited",
+      inheritedFrom: "building",
+      path: ["hotel", "building"]
+    });
+    expect(beautiful?.sentence.toLowerCase()).toContain("hotel");
+    expect(beautiful?.sentence.toLowerCase()).toContain("beautiful");
+    expect(
+      result.sentences.some((sentence) => sentence.relatedCategory === "system")
+    ).toBe(false);
+  });
+
+  it("uses a name association when a compatible catalogue slot exists", async () => {
+    const result = await makeGenerator(hotelWithName).generate("hotel", {
+      seed: 1,
+      maxSentences: 10
+    });
+    const woman = result.sentences.find(
+      (sentence) => sentence.relatedWord === "woman"
+    );
+
+    expect(woman).toMatchObject({
+      relatedCategory: "name",
+      relatedSlotCategory: "nouns",
+      relatedOrigin: "direct"
+    });
+    expect(woman?.sentence.toLowerCase()).toContain("woman");
+  });
+
+  it("returns no fabricated sentence for a name-only focus word", async () => {
+    const result = await makeGenerator(hiltonNameOnly).generate("hilton", {
+      seed: 1
+    });
+
+    expect(result.sentences).toEqual([]);
+    expect(result.reason).toContain("no compatible catalogue category");
   });
 });

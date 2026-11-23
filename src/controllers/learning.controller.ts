@@ -8,12 +8,14 @@ import {
   learnSentences,
   matchSentence
 } from "../sentence-learning/index.js";
+import { resetLearning } from "../word-knowledge/index.js";
 import {
   generateRandomRequestSchema,
   generateRequestSchema,
   learnBatchRequestSchema,
   learnRequestSchema,
-  matchRequestSchema
+  matchRequestSchema,
+  resetLearningSchema
 } from "../schemas/learning.schema.js";
 
 export const learnOne: RequestHandler = async (request, response) => {
@@ -58,6 +60,16 @@ export const generateOne: RequestHandler = async (request, response) => {
 export const generateRandom: RequestHandler = async (request, response) => {
   const { seed } = generateRandomRequestSchema.parse(request.body ?? {});
   const result = await generateRandomSentence({ seed });
+
+  response.status(200).json({ data: result });
+};
+
+export const resetLearningHandler: RequestHandler = async (
+  request,
+  response
+) => {
+  resetLearningSchema.parse(request.body);
+  const result = await resetLearning();
 
   response.status(200).json({ data: result });
 };

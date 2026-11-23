@@ -244,5 +244,137 @@
         ]
       }
     ]
+  },
+  {
+    "word": "building",
+    "category": "nouns",
+    "related": [
+      {
+        "word": "beautiful",
+        "category": "adjectives",
+        "occurrences": 1,
+        "sources": [
+          "direct"
+        ],
+        "examples": [],
+        "observationIds": [
+          "seed:direct:building:nouns"
+        ]
+      }
+    ]
+  },
+  {
+    "word": "hotel",
+    "category": "nouns",
+    "related": [
+      {
+        "word": "big",
+        "category": "adjectives",
+        "occurrences": 1,
+        "sources": [
+          "direct"
+        ],
+        "examples": [],
+        "observationIds": [
+          "seed:direct:hotel:nouns"
+        ]
+      },
+      {
+        "word": "building",
+        "category": "nouns",
+        "occurrences": 1,
+        "sources": [
+          "direct"
+        ],
+        "examples": [],
+        "observationIds": [
+          "seed:direct:hotel:nouns"
+        ]
+      },
+      {
+        "word": "building",
+        "category": "system",
+        "occurrences": 1,
+        "sources": [
+          "direct"
+        ],
+        "examples": [],
+        "observationIds": [
+          "seed:direct:hotel:nouns"
+        ]
+      }
+    ]
+  },
+  {
+    "word": "hilton",
+    "category": "name",
+    "related": [
+      {
+        "word": "tall",
+        "category": "adjectives",
+        "occurrences": 1,
+        "sources": [
+          "direct"
+        ],
+        "examples": [],
+        "observationIds": [
+          "seed:direct:hilton:name"
+        ]
+      },
+      {
+        "word": "hotel",
+        "category": "system",
+        "occurrences": 1,
+        "sources": [
+          "direct"
+        ],
+        "examples": [],
+        "observationIds": [
+          "seed:direct:hilton:name"
+        ]
+      },
+      {
+        "word": "paris",
+        "category": "name",
+        "occurrences": 1,
+        "sources": [
+          "direct"
+        ],
+        "examples": [],
+        "observationIds": [
+          "seed:direct:hilton:name"
+        ]
+      },
+      {
+        "word": "building",
+        "category": "system",
+        "occurrences": 1,
+        "sources": [
+          "direct"
+        ],
+        "examples": [],
+        "observationIds": [
+          "seed:direct:hilton:name"
+        ]
+      }
+    ]
+  },
+  {
+    "word": "paris",
+    "category": "name",
+    "related": [
+      {
+        "word": "woman",
+        "category": "nouns",
+        "occurrences": 1,
+        "sources": [
+          "direct"
+        ],
+        "examples": [],
+        "observationIds": [
+          "seed:direct:paris:name"
+        ]
+      }
+    ]
   }
 ]

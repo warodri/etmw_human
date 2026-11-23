@@ -25,6 +25,24 @@ const generationError = document.querySelector("#generation-error");
 const generationOutput = document.querySelector("#generation-output");
 const generationSentence = document.querySelector("#generation-sentence");
 const generationChoices = document.querySelector("#generation-choices");
+const refreshStateButton = document.querySelector("#refresh-state");
+const resetLearningButton = document.querySelector("#reset-learning");
+const stateRuleCount = document.querySelector("#state-rule-count");
+const stateKnowledgeCount = document.querySelector("#state-knowledge-count");
+const stateRelationshipCount = document.querySelector("#state-relationship-count");
+const stateRulesMeta = document.querySelector("#state-rules-meta");
+const stateKnowledgeMeta = document.querySelector("#state-knowledge-meta");
+const stateRules = document.querySelector("#state-rules");
+const stateKnowledge = document.querySelector("#state-knowledge");
+const stateNotice = document.querySelector("#state-notice");
+const stateError = document.querySelector("#state-error");
+const simpleGenerateButton = document.querySelector("#simple-generate-button");
+const simpleGenerateError = document.querySelector("#simple-generate-error");
+const simpleGenerateOutput = document.querySelector("#simple-generate-output");
+const simpleGenerateSentence = document.querySelector("#simple-generate-sentence");
+const simpleGenerateChoices = document.querySelector("#simple-generate-choices");
+const simpleGeneratePattern = document.querySelector("#simple-generate-pattern");
+const simpleGenerateRule = document.querySelector("#simple-generate-rule");
 const statusPill = document.querySelector("#api-status");
 const statusText = document.querySelector("#api-status-text");
 const sampleButtons = document.querySelectorAll(".sample");
@@ -35,6 +53,7 @@ let arraysPromise = null;
 let selectedRule = null;
 let learningBusy = false;
 let generationBusy = false;
+let simpleGenerateBusy = false;
 let renderVersion = 0;
 
 function element(tag, className, text) {
@@ -51,6 +70,12 @@ function element(tag, className, text) {
 function toneForArray(name) {
   const value = name.toLowerCase();
 
+  if (value === "system") {
+    return "system";
+  }
+  if (value === "name") {
+    return "name";
+  }
   if (value.includes("pronoun")) {
     return "pronoun";
   }
@@ -260,6 +285,7 @@ async function submitLearn(event) {
     const preferredRuleId =
       payload.data.learned[0]?.id ?? payload.data.existingRuleIds[0];
     await loadRules(preferredRuleId);
+    await loadLearningState();
   } catch (error) {
     showLearnError(
       error instanceof Error
@@ -617,6 +643,337 @@ async function surprise() {
   await selectRule(rule.id, true);
 }
 
+function hideStateError() {
+  stateError.textContent = "";
+  stateError.hidden = true;
+}
+
+function showStateError(message) {
+  stateError.textContent = message;
+  stateError.hidden = false;
+}
+
+function hideStateNotice() {
+  stateNotice.textContent = "";
+  stateNotice.hidden = true;
+}
+
+function showStateNotice(message) {
+  stateNotice.textContent = message;
+  stateNotice.hidden = false;
+}
+
+function renderStateRules(rulesToRender) {
+  stateRules.replaceChildren();
+  stateRulesMeta.textContent = `${rulesToRender.length} ${
+    rulesToRender.length === 1 ? "rule" : "rules"
+  }`;
+
+  if (rulesToRender.length === 0) {
+    stateRules.append(
+      element(
+        "div",
+        "state-empty",
+        "No sentence rules yet. Add a sentence to begin."
+      )
+    );
+    return;
+  }
+
+  for (const rule of rulesToRender) {
+    const item = element("div", "state-rule");
+    const head = element("div", "state-rule-head");
+    head.append(
+      element("span", "state-rule-id", rule.id),
+      element(
+        "span",
+        "state-rule-meta",
+        `${rule.count} ${rule.count === 1 ? "observation" : "observations"}`
+      )
+    );
+    item.append(head);
+
+    const pattern = element("div", "state-rule-pattern");
+    renderPattern(pattern, rule.pattern);
+    item.append(pattern);
+
+    if (rule.examples.length > 0) {
+      const example = element(
+        "p",
+        "state-rule-example",
+        `“${rule.examples[0]}”`
+      );
+      example.title = rule.examples.join("\n");
+      item.append(example);
+    }
+
+    stateRules.append(item);
+  }
+}
+
+function renderStateKnowledge(entries) {
+  stateKnowledge.replaceChildren();
+  stateKnowledgeMeta.textContent = `${entries.length} ${
+    entries.length === 1 ? "entry" : "entries"
+  }`;
+
+  if (entries.length === 0) {
+    stateKnowledge.append(
+      element(
+        "div",
+        "state-empty",
+        "No word knowledge yet. Teach a connection or learn a matching sentence."
+      )
+    );
+    return;
+  }
+
+  for (const entry of entries) {
+    const item = element("div", "state-knowledge");
+    const head = element("div", "state-knowledge-head");
+    head.append(element("span", "state-word", entry.word));
+    head.append(
+      element(
+        "span",
+        `array-chip tone-${toneForArray(entry.category)}`,
+        entry.category
+      )
+    );
+    item.append(head);
+
+    const relatedList = element("div", "state-related-list");
+
+    if (entry.related.length === 0) {
+      relatedList.append(
+        element("span", "state-rule-example", "No direct connections.")
+      );
+    } else {
+      for (const related of entry.related) {
+        const row = element("div", "state-related-item");
+        row.append(element("span", "state-related-arrow", "→"));
+
+        const word = element(
+          "span",
+          `state-related-word${
+            related.category === "system"
+              ? " is-system"
+              : related.category === "name"
+                ? " is-name"
+                : ""
+          }`,
+          related.word
+        );
+        word.title = `${related.occurrences} observation(s); sources: ${related.sources.join(
+          ", "
+        )}`;
+        row.append(word);
+        row.append(
+          element(
+            "span",
+            `array-chip tone-${toneForArray(related.category)}`,
+            related.category
+          )
+        );
+
+        if (related.occurrences > 1) {
+          row.append(
+            element("span", "state-count", `×${related.occurrences}`)
+          );
+        }
+
+        relatedList.append(row);
+      }
+    }
+
+    item.append(relatedList);
+    stateKnowledge.append(item);
+  }
+}
+
+async function loadLearningState() {
+  hideStateError();
+  hideStateNotice();
+  stateRuleCount.textContent = "…";
+  stateKnowledgeCount.textContent = "…";
+  stateRelationshipCount.textContent = "…";
+
+  try {
+    const [rulesResponse, knowledgeResponse] = await Promise.all([
+      fetch("/api/v1/learning/rules"),
+      fetch("/api/v1/knowledge")
+    ]);
+
+    if (!rulesResponse.ok) {
+      throw new Error(`Rules request failed with status ${rulesResponse.status}`);
+    }
+
+    if (!knowledgeResponse.ok) {
+      throw new Error(
+        `Knowledge request failed with status ${knowledgeResponse.status}`
+      );
+    }
+
+    const rulesPayload = await rulesResponse.json();
+    const knowledgePayload = await knowledgeResponse.json();
+    const rulesData = rulesPayload?.data?.rules;
+    const entries = knowledgePayload?.data?.entries;
+
+    if (!Array.isArray(rulesData) || !Array.isArray(entries)) {
+      throw new Error("The server returned an unexpected learning state.");
+    }
+
+    stateRuleCount.textContent = String(rulesData.length);
+    stateKnowledgeCount.textContent = String(entries.length);
+    stateRelationshipCount.textContent = String(
+      entries.reduce(
+        (total, entry) =>
+          total + (Array.isArray(entry.related) ? entry.related.length : 0),
+        0
+      )
+    );
+    renderStateRules(rulesData);
+    renderStateKnowledge(entries);
+  } catch (error) {
+    showStateError(
+      error instanceof Error
+        ? error.message
+        : "The learning state could not be loaded."
+    );
+  }
+}
+
+async function resetLearningState() {
+  const confirmed = window.confirm(
+    "Reset all learned sentence rules and word knowledge? This cannot be undone."
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  hideStateError();
+  hideStateNotice();
+  resetLearningButton.disabled = true;
+
+  try {
+    const response = await fetch("/api/v1/learning/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ confirm: "RESET" })
+    });
+
+    let payload = null;
+
+    try {
+      payload = await response.json();
+    } catch {
+      payload = null;
+    }
+
+    if (!response.ok) {
+      throw new Error(renderErrorPayload(payload, response.status));
+    }
+
+    selectedRule = null;
+    generateWorkspace.hidden = true;
+    generationFields.replaceChildren();
+    generationOutput.hidden = true;
+    generationSentence.textContent = "";
+    generationChoices.replaceChildren();
+    learnResult.hidden = true;
+    learningInput.textContent = "";
+    learningTokens.replaceChildren();
+    learningNotes.replaceChildren();
+    hideLearnError();
+
+    await Promise.all([loadRules(), loadLearningState()]);
+    showStateNotice(
+      "All learning cleared. Add a sentence to start again from zero."
+    );
+  } catch (error) {
+    showStateError(
+      error instanceof Error
+        ? error.message
+        : "The learning state could not be reset."
+    );
+  } finally {
+    resetLearningButton.disabled = false;
+  }
+}
+
+function hideSimpleGenerateError() {
+  simpleGenerateError.textContent = "";
+  simpleGenerateError.hidden = true;
+}
+
+function showSimpleGenerateError(message) {
+  simpleGenerateError.textContent = message;
+  simpleGenerateError.hidden = false;
+}
+
+function setSimpleGenerateBusy(nextBusy) {
+  simpleGenerateBusy = nextBusy;
+  simpleGenerateButton.disabled = nextBusy;
+  simpleGenerateButton.textContent = nextBusy
+    ? "Generating…"
+    : "Generate a sentence";
+}
+
+async function generateSimpleSentence() {
+  if (simpleGenerateBusy) {
+    return;
+  }
+
+  hideSimpleGenerateError();
+  simpleGenerateOutput.hidden = true;
+  setSimpleGenerateBusy(true);
+
+  try {
+    const response = await fetch("/api/v1/learning/generate/random", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({})
+    });
+
+    let payload = null;
+
+    try {
+      payload = await response.json();
+    } catch {
+      payload = null;
+    }
+
+    if (!response.ok) {
+      throw new Error(renderErrorPayload(payload, response.status));
+    }
+
+    if (!payload?.data) {
+      throw new Error("The server returned an unexpected generation response.");
+    }
+
+    const data = payload.data;
+    simpleGenerateSentence.textContent = data.sentence;
+    simpleGenerateChoices.replaceChildren();
+
+    data.chosenWords.forEach((word) => {
+      simpleGenerateChoices.append(element("span", "word-chip", word));
+    });
+
+    renderPattern(simpleGeneratePattern, data.pattern);
+    simpleGenerateRule.textContent = data.ruleId;
+    simpleGenerateOutput.hidden = false;
+  } catch (error) {
+    simpleGenerateOutput.hidden = true;
+    showSimpleGenerateError(
+      error instanceof Error
+        ? error.message
+        : "The sentence could not be generated."
+    );
+  } finally {
+    setSimpleGenerateBusy(false);
+  }
+}
+
 async function checkHealth() {
   try {
     const response = await fetch("/health", { cache: "no-store" });
@@ -687,6 +1044,19 @@ generateRandomButton.addEventListener("click", () => {
   void generateSentence(true);
 });
 
+simpleGenerateButton.addEventListener("click", () => {
+  void generateSimpleSentence();
+});
+
+refreshStateButton.addEventListener("click", () => {
+  void loadLearningState();
+});
+
+resetLearningButton.addEventListener("click", () => {
+  void resetLearningState();
+});
+
 updateCharacterCount();
 void checkHealth();
 void loadRules();
+void loadLearningState();

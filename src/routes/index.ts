@@ -22,7 +22,9 @@ apiRouter.get("/api", (_request, response) => {
       knowledgeTeach: "POST /api/v1/knowledge/teach",
       knowledgeLearn: "POST /api/v1/knowledge/learn",
       knowledgeWord: "GET /api/v1/knowledge/:word",
-      knowledgeGenerate: "POST /api/v1/knowledge/generate"
+      knowledgeGenerate: "POST /api/v1/knowledge/generate",
+      knowledgeList: "GET /api/v1/knowledge",
+      resetLearning: "POST /api/v1/learning/reset"
     }
   });
 });

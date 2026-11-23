@@ -26,6 +26,45 @@ beforeAll(async () => {
     .post("/api/v1/knowledge/learn")
     .send({ sentence: "The dog is an animal." })
     .expect(200);
+
+  const directTeachings = [
+    {
+      word: "building",
+      category: "nouns",
+      related: [{ word: "beautiful", category: "adjectives" }]
+    },
+    {
+      word: "hotel",
+      category: "nouns",
+      related: [
+        { word: "big", category: "adjectives" },
+        { word: "building", category: "nouns" },
+        { word: "building", category: "system" }
+      ]
+    },
+    {
+      word: "hilton",
+      category: "name",
+      related: [
+        { word: "tall", category: "adjectives" },
+        { word: "hotel", category: "system" },
+        { word: "paris", category: "name" },
+        { word: "building", category: "system" }
+      ]
+    },
+    {
+      word: "paris",
+      category: "name",
+      related: [{ word: "woman", category: "nouns" }]
+    }
+  ];
+
+  for (const teaching of directTeachings) {
+    await request(app)
+      .post("/api/v1/knowledge/teach")
+      .send(teaching)
+      .expect(200);
+  }
 });
 
 describe("knowledge API", () => {
@@ -170,5 +209,173 @@ describe("knowledge API", () => {
 
     expect(response.body.data.sentences).toEqual([]);
     expect(response.body.data.reason).toContain("was not found");
+  });
+
+  it("keeps direct markers in the default lookup response", async () => {
+    const response = await request(app)
+      .get("/api/v1/knowledge/hilton")
+      .expect(200);
+
+    expect(response.body.data.entries[0].category).toBe("name");
+    expect(response.body.data.entries[0].related).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ word: "hotel", category: "system" }),
+        expect.objectContaining({ word: "paris", category: "name" })
+      ])
+    );
+    expect(response.body.data.effectiveRelationships).toBeUndefined();
+    expect(response.body.data.resolutionWarnings).toBeUndefined();
+  });
+
+  it("returns resolved inherited relationships with provenance", async () => {
+    const response = await request(app)
+      .get("/api/v1/knowledge/hilton?includeInherited=true")
+      .expect(200);
+    const data = response.body.data;
+
+    expect(data.entries[0].category).toBe("name");
+    expect(data.resolved).toHaveLength(1);
+    expect(data.resolutionWarnings).toEqual([]);
+    expect(data.effectiveRelationships).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          word: "tall",
+          category: "adjectives",
+          origin: "direct"
+        }),
+        expect.objectContaining({
+          word: "big",
+          category: "adjectives",
+          origin: "inherited"
+        }),
+        expect.objectContaining({
+          word: "building",
+          category: "nouns",
+          origin: "inherited"
+        }),
+        expect.objectContaining({
+          word: "beautiful",
+          category: "adjectives",
+          origin: "inherited"
+        }),
+        expect.objectContaining({
+          word: "paris",
+          category: "name",
+          origin: "direct"
+        })
+      ])
+    );
+    expect(
+      data.effectiveRelationships.some(
+        (relationship: { category: string }) =>
+          relationship.category === "system"
+      )
+    ).toBe(false);
+    expect(
+      data.effectiveRelationships.some(
+        (relationship: { word: string }) => relationship.word === "woman"
+      )
+    ).toBe(false);
+  });
+
+  it("rejects system as a top-level teaching category", async () => {
+    const response = await request(app)
+      .post("/api/v1/knowledge/teach")
+      .send({
+        word: "hotel",
+        category: "system",
+        related: [{ word: "big", category: "adjectives" }]
+      })
+      .expect(400);
+
+    expect(response.body.error.message).toContain("Top-level category");
+  });
+
+  it("sees newly taught hotel relationships through hilton", async () => {
+    await request(app)
+      .post("/api/v1/knowledge/teach")
+      .send({
+        word: "hotel",
+        category: "nouns",
+        related: [{ word: "expensive", category: "adjectives" }]
+      })
+      .expect(200);
+
+    const response = await request(app)
+      .get("/api/v1/knowledge/hilton?includeInherited=true")
+      .expect(200);
+
+    expect(response.body.data.effectiveRelationships).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          word: "expensive",
+          category: "adjectives",
+          origin: "inherited"
+        })
+      ])
+    );
+  });
+
+  it("generates from inherited ordinary relationships", async () => {
+    const response = await request(app)
+      .post("/api/v1/knowledge/generate")
+      .send({ word: "hotel", seed: 42, maxSentences: 10 })
+      .expect(200);
+    const beautiful = response.body.data.sentences.find(
+      (sentence: { relatedWord: string }) =>
+        sentence.relatedWord === "beautiful"
+    );
+
+    expect(beautiful).toMatchObject({
+      relatedCategory: "adjectives",
+      relatedSlotCategory: "adjectives",
+      relatedOrigin: "inherited"
+    });
+    expect(beautiful.sentence.toLowerCase()).toContain("hotel");
+    expect(beautiful.sentence.toLowerCase()).toContain("beautiful");
+    expect(
+      response.body.data.sentences.some(
+        (sentence: { relatedCategory: string }) =>
+          sentence.relatedCategory === "system"
+      )
+    ).toBe(false);
+  });
+
+  it("uses a name association when a compatible slot exists", async () => {
+    await request(app)
+      .post("/api/v1/knowledge/teach")
+      .send({
+        word: "hotel",
+        category: "nouns",
+        related: [{ word: "woman", category: "name" }]
+      })
+      .expect(200);
+
+    const response = await request(app)
+      .post("/api/v1/knowledge/generate")
+      .send({ word: "hotel", seed: 2, maxSentences: 20 })
+      .expect(200);
+    const woman = response.body.data.sentences.find(
+      (sentence: { relatedWord: string }) => sentence.relatedWord === "woman"
+    );
+
+    expect(woman).toMatchObject({
+      relatedCategory: "name",
+      relatedSlotCategory: "nouns",
+      relatedOrigin: "direct"
+    });
+    expect(woman.sentence.toLowerCase()).toContain("woman");
+  });
+
+  it("does not fabricate a rule for a name-only focus word", async () => {
+    const response = await request(app)
+      .post("/api/v1/knowledge/generate")
+      .send({ word: "hilton", seed: 1 })
+      .expect(200);
+
+    expect(response.body.data.sentences).toEqual([]);
+    expect(response.body.data.reason).toContain(
+      "no compatible catalogue category"
+    );
   });
 });

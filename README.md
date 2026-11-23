@@ -12,7 +12,12 @@ npm run seed:knowledge
 npm run dev
 ```
 
-The server runs on **http://localhost:3450**. For a production-style start:
+The server runs on **http://localhost:3450**. The current browser UI focuses on
+**Add a sentence** and a single **Generate a sentence** action. The generate
+button selects a random learned rule and shows the sentence, chosen words, and
+the learned pattern. The more detailed generation controls and the
+learning-state panel are present in the UI code but hidden for now. For a
+production-style start:
 
 ```bash
 npm run build
@@ -39,10 +44,21 @@ All previous endpoints remain available, including:
 - `POST /api/v1/learning/match`
 - `POST /api/v1/learning/generate`
 - `GET /api/v1/learning/vocabulary`
+- `POST /api/v1/learning/reset`
 
 `POST /api/v1/learning/learn` intentionally remains **rule-only** for backward
 compatibility. The combined rule + relationship endpoint is
 `POST /api/v1/knowledge/learn`.
+
+Knowledge categories additionally accept two reserved markers:
+
+- Top-level `name` creates or updates a named entry that does not need to be in
+  a vocabulary array.
+- Related `name` stores a named association without catalogue membership checks
+  and without inheriting the named entry's knowledge.
+- Related `system` stores a reference to another knowledge entry. References are
+  resolved on read and are never copied into stored knowledge.
+- Top-level `system` is rejected with a validation error.
 
 ## Knowledge APIs
 
@@ -52,6 +68,7 @@ compatibility. The combined rule + relationship endpoint is
 | POST | `/api/v1/knowledge/learn` | Learn sentence rules and extract supported connections |
 | POST | `/api/v1/knowledge/learn/batch` | Process multiple sentences |
 | GET | `/api/v1/knowledge/:word` | Read forward connections for a word |
+| GET | `/api/v1/knowledge` | List all stored knowledge entries |
 | POST | `/api/v1/knowledge/generate` | Build sentences from a focus word, stored connection, and learned rule |
 
 ### Teach
@@ -93,6 +110,27 @@ Response shape:
 
 Invalid words or categories are returned inside `unknown`; the vocabulary
 arrays are never edited automatically.
+
+Reserved markers can be taught in the same request:
+
+```bash
+curl -s http://localhost:3450/api/v1/knowledge/teach \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "word": "hilton",
+    "category": "name",
+    "related": [
+      {"word": "tall", "category": "adjectives"},
+      {"word": "hotel", "category": "system"},
+      {"word": "paris", "category": "name"}
+    ],
+    "observationId": "example:hilton:1"
+  }'
+```
+
+`hotel` is stored as a system reference, not copied into Hilton's relationships.
+`paris` is stored as a named association; it does not inherit Paris's knowledge.
+A top-level category of `system` is rejected.
 
 ### Learn
 
@@ -174,6 +212,34 @@ Example response:
 `GET /api/v1/knowledge/blue` returns no `blue → sky` relationship: reverse facts
 are not asserted automatically.
 
+Resolved knowledge is requested with `includeInherited=true`:
+
+```bash
+curl -s 'http://localhost:3450/api/v1/knowledge/hilton?includeInherited=true'
+```
+
+The response keeps the existing `word`, `catalogueCategories`, and `entries`
+fields, and adds `resolved`, `effectiveRelationships`, and
+`resolutionWarnings`. Effective relationships identify `origin` (`direct` or
+`inherited`), `inheritedFrom`, and `path`/`alternativePaths`. System markers and
+missing or cyclic references never become ordinary word relationships. The
+`system` category is never used as a generated sentence slot.
+
+### Reset learning
+
+Reset is destructive and requires the explicit confirmation value `RESET`:
+
+```bash
+curl -s http://localhost:3450/api/v1/learning/reset \
+  -H 'Content-Type: application/json' \
+  -d '{"confirm":"RESET"}'
+```
+
+This clears both `data/learned-rules.json` and `data/word-knowledge.json`.
+The learning-state panel currently containing the UI reset control is hidden
+while the simplified UI is active; the API remains available. To restore the
+demonstration data afterward, run `npm run seed:knowledge`.
+
 ### Generate
 
 ```bash
@@ -225,6 +291,7 @@ LEARNING_PATTERN_CAP=100
 WORD_KNOWLEDGE_FILE=
 KNOWLEDGE_EXAMPLE_LIMIT=5
 KNOWLEDGE_DRIVER=json
+KNOWLEDGE_MAX_RESOLUTION_DEPTH=10
 ```
 
 The JSON repository validates its file, creates missing files/directories,
@@ -262,11 +329,16 @@ The seed is idempotent: direct relationships use observation IDs, sentence
 relationships use deterministic observation IDs, and rule examples already in
 storage are not re-counted. It does not reset user data.
 
-It includes 23 sentences (the required 15 plus additional structures), 9 direct
+It includes 23 sentences (the required 15 plus additional structures), 13 direct
 relationship groups, and enough category patterns to preload more than 12
-distinct rules on an empty store. All tokens used by the seed exist in the
-current vocabulary arrays, so **there are no missing catalogue words** for this
-seed set. No vocabulary array was modified.
+distinct rules on an empty store. The seed includes ordinary knowledge as well
+as demonstration `name` and `system` markers for `hilton`, `hotel`, `paris`, and
+`building`.
+
+`large` is not present in the current vocabulary catalogue, so the seed uses
+`beautiful` for the `building → large` demonstration relationship. `hilton` and
+`paris` are intentionally name-only entries and are not added to the vocabulary
+arrays. No vocabulary array was modified.
 
 ## Relationship extraction
 

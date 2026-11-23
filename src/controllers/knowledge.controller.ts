@@ -3,11 +3,13 @@ import {
   generateFromKnowledge,
   getKnowledgeForWord,
   learnKnowledgeSentence,
+  listKnowledge,
   learnKnowledgeSentences,
   teachKnowledge
 } from "../word-knowledge/index.js";
 import {
   generateKnowledgeSchema,
+  knowledgeLookupQuerySchema,
   knowledgeWordParamSchema,
   learnKnowledgeBatchSchema,
   learnKnowledgeSchema,
@@ -47,12 +49,28 @@ export const learnKnowledgeBatchHandler: RequestHandler = async (
   });
 };
 
+export const listKnowledgeHandler: RequestHandler = async (
+  _request,
+  response
+) => {
+  const entries = await listKnowledge();
+
+  response.status(200).json({
+    data: { entries, count: entries.length }
+  });
+};
+
 export const getKnowledgeHandler: RequestHandler = async (
   request,
   response
 ) => {
   const { word } = knowledgeWordParamSchema.parse(request.params);
-  const result = await getKnowledgeForWord(word);
+  const { includeInherited } = knowledgeLookupQuerySchema.parse(
+    request.query
+  );
+  const result = await getKnowledgeForWord(word, {
+    includeInherited: includeInherited === "true"
+  });
 
   response.status(200).json({ data: result });
 };

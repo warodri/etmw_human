@@ -3,10 +3,15 @@ import type { LearningResult } from "../sentence-learning/types.js";
 
 export type KnowledgeSource = "direct" | "sentence";
 export type KnowledgeAction = "added" | "updated" | "skipped";
+export type KnowledgeEntryCategory = VocabularyCategory | "name";
+export type KnowledgeRelatedCategory =
+  | VocabularyCategory
+  | "name"
+  | "system";
 
 export interface RelatedWord {
   word: string;
-  category: VocabularyCategory;
+  category: KnowledgeRelatedCategory;
   occurrences: number;
   sources: KnowledgeSource[];
   examples: string[];
@@ -15,15 +20,15 @@ export interface RelatedWord {
 
 export interface WordKnowledge {
   word: string;
-  category: VocabularyCategory;
+  category: KnowledgeEntryCategory;
   related: RelatedWord[];
 }
 
 export interface KnowledgeRelationshipInput {
   focusWord: string;
-  focusCategory: VocabularyCategory;
+  focusCategory: KnowledgeEntryCategory;
   relatedWord: string;
-  relatedCategory: VocabularyCategory;
+  relatedCategory: KnowledgeRelatedCategory;
   source: KnowledgeSource;
   example?: string;
   observationId?: string;
@@ -31,9 +36,9 @@ export interface KnowledgeRelationshipInput {
 
 export interface KnowledgeRelationship {
   focusWord: string;
-  focusCategory: VocabularyCategory;
+  focusCategory: KnowledgeEntryCategory;
   relatedWord: string;
-  relatedCategory: VocabularyCategory;
+  relatedCategory: KnowledgeRelatedCategory;
   occurrences: number;
   sources: KnowledgeSource[];
   action: KnowledgeAction;
@@ -47,7 +52,7 @@ export interface RepositoryUpsertSummary {
 
 export interface KnowledgeQueryOptions {
   word?: string;
-  category?: VocabularyCategory;
+  category?: KnowledgeEntryCategory;
 }
 
 export interface UnknownKnowledgeEntry {
@@ -77,6 +82,29 @@ export interface WordKnowledgeLookup {
   word: string;
   catalogueCategories: VocabularyCategory[];
   entries: WordKnowledge[];
+}
+
+export interface ResolvedRelationship {
+  word: string;
+  category: KnowledgeRelatedCategory;
+  origin: "direct" | "inherited";
+  inheritedFrom?: string;
+  path?: string[];
+  alternativePaths?: string[][];
+}
+
+export interface ResolvedKnowledge {
+  word: string;
+  category: KnowledgeEntryCategory;
+  direct: RelatedWord[];
+  effective: ResolvedRelationship[];
+  warnings: string[];
+}
+
+export interface ResolvedKnowledgeLookup extends WordKnowledgeLookup {
+  resolved: ResolvedKnowledge[];
+  effectiveRelationships: ResolvedRelationship[];
+  resolutionWarnings: string[];
 }
 
 export interface ExtractedRelationship {
@@ -115,7 +143,11 @@ export interface KnowledgeGenerationSentence {
   pattern: VocabularyCategory[];
   words: string[];
   relatedWord: string;
-  relatedCategory: VocabularyCategory;
+  relatedCategory: KnowledgeRelatedCategory;
+  relatedSlotCategory?: VocabularyCategory;
+  relatedOrigin?: "direct" | "inherited";
+  inheritedFrom?: string;
+  path?: string[];
   source: "learned-relationship";
 }
 
@@ -123,6 +155,7 @@ export interface KnowledgeGenerationResult {
   focusWord: string;
   sentences: KnowledgeGenerationSentence[];
   reason?: string;
+  resolutionWarnings?: string[];
 }
 
 export interface KnowledgeSeedDirectGroup {

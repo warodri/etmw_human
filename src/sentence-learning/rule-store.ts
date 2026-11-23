@@ -96,6 +96,13 @@ export class RuleStore {
     return rule ? cloneRule(rule) : undefined;
   }
 
+  async clear(): Promise<void> {
+    return this.enqueue(async () => {
+      await this.writeRules([]);
+      this.rules = [];
+    });
+  }
+
   async upsertPatterns(
     patterns: VocabularyCategory[][],
     example: string,

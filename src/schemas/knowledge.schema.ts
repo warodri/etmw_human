@@ -61,6 +61,10 @@ export const knowledgeWordParamSchema = z.object({
     .max(200, "word must be at most 200 characters")
 });
 
+export const knowledgeLookupQuerySchema = z.object({
+  includeInherited: z.enum(["true", "false"]).optional()
+});
+
 export const generateKnowledgeSchema = z.object({
   word: wordSchema,
   maxSentences: z.number().int().min(1).max(20).optional(),

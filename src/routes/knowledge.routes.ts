@@ -3,6 +3,7 @@ import {
   generateKnowledgeHandler,
   getKnowledgeHandler,
   learnKnowledgeBatchHandler,
+  listKnowledgeHandler,
   learnKnowledgeHandler,
   teachKnowledgeHandler
 } from "../controllers/knowledge.controller.js";
@@ -13,4 +14,5 @@ knowledgeRoutes.post("/teach", teachKnowledgeHandler);
 knowledgeRoutes.post("/learn", learnKnowledgeHandler);
 knowledgeRoutes.post("/learn/batch", learnKnowledgeBatchHandler);
 knowledgeRoutes.post("/generate", generateKnowledgeHandler);
+knowledgeRoutes.get("/", listKnowledgeHandler);
 knowledgeRoutes.get("/:word", getKnowledgeHandler);

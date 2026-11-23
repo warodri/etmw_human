@@ -1,5 +1,5 @@
-import type { VocabularyCategory } from "../data/vocabulary.js";
 import type {
+  KnowledgeEntryCategory,
   KnowledgeQueryOptions,
   KnowledgeRelationshipInput,
   RepositoryUpsertSummary,
@@ -10,10 +10,11 @@ export interface KnowledgeRepository {
   getByWord(word: string): Promise<WordKnowledge[]>;
   getByWordAndCategory(
     word: string,
-    category: VocabularyCategory
+    category: KnowledgeEntryCategory
   ): Promise<WordKnowledge | undefined>;
   upsertRelationships(
     updates: KnowledgeRelationshipInput[]
   ): Promise<RepositoryUpsertSummary>;
   list(options?: KnowledgeQueryOptions): Promise<WordKnowledge[]>;
+  clear(): Promise<void>;
 }

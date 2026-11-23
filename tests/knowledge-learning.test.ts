@@ -157,6 +157,9 @@ describe("sentence learning with relationship extraction", () => {
       },
       async upsertRelationships(): Promise<RepositoryUpsertSummary> {
         throw new Error("storage unavailable");
+      },
+      async clear(): Promise<void> {
+        return;
       }
     };
     const partial = new KnowledgeLearningService(

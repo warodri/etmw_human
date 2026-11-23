@@ -7,6 +7,7 @@ import { vocabularyIndex } from "../src/sentence-learning/category-matcher.js";
 import { RuleStore } from "../src/sentence-learning/rule-store.js";
 import { JsonKnowledgeRepository } from "../src/word-knowledge/json-knowledge.repository.js";
 import { KnowledgeSeeder } from "../src/word-knowledge/knowledge-seeder.js";
+import { KnowledgeResolver } from "../src/word-knowledge/knowledge-resolver.js";
 import type { KnowledgeSeedData } from "../src/word-knowledge/types.js";
 
 const seedPath = fileURLToPath(
@@ -70,6 +71,73 @@ describe("knowledge seeder", () => {
       sources: ["direct", "sentence"]
     });
     expect(blue?.examples).toContain("The sky is blue.");
+
+    const building = await repository.getByWord("building");
+    const hotel = await repository.getByWord("hotel");
+    const hilton = await repository.getByWord("hilton");
+    const paris = await repository.getByWord("paris");
+
+    expect(building[0]?.related.map((entry) => entry.word)).toContain(
+      "beautiful"
+    );
+    expect(hotel[0]?.related).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ word: "big", category: "adjectives" }),
+        expect.objectContaining({ word: "building", category: "nouns" }),
+        expect.objectContaining({ word: "building", category: "system" })
+      ])
+    );
+    expect(hilton[0]?.category).toBe("name");
+    expect(hilton[0]?.related).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ word: "tall", category: "adjectives" }),
+        expect.objectContaining({ word: "hotel", category: "system" }),
+        expect.objectContaining({ word: "paris", category: "name" }),
+        expect.objectContaining({ word: "building", category: "system" })
+      ])
+    );
+    expect(paris[0]?.category).toBe("name");
+    expect(paris[0]?.related.map((entry) => entry.word)).toContain("woman");
+
+    const resolver = new KnowledgeResolver(repository);
+    const [resolvedHilton] = await resolver.resolve("hilton");
+
+    expect(resolvedHilton?.warnings).toEqual([]);
+    expect(resolvedHilton?.effective).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          word: "tall",
+          category: "adjectives",
+          origin: "direct"
+        }),
+        expect.objectContaining({
+          word: "big",
+          category: "adjectives",
+          origin: "inherited"
+        }),
+        expect.objectContaining({
+          word: "building",
+          category: "nouns",
+          origin: "inherited"
+        }),
+        expect.objectContaining({
+          word: "beautiful",
+          category: "adjectives",
+          origin: "inherited"
+        }),
+        expect.objectContaining({
+          word: "paris",
+          category: "name",
+          origin: "direct"
+        })
+      ])
+    );
+    expect(
+      resolvedHilton?.effective.some((entry) => entry.category === "system")
+    ).toBe(false);
+    expect(
+      resolvedHilton?.effective.some((entry) => entry.word === "woman")
+    ).toBe(false);
 
     const rules = await rulesStore.getRules();
     const examples = new Set(rules.flatMap((rule) => rule.examples));

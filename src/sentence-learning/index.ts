@@ -35,6 +35,10 @@ export async function getRules() {
   return defaultRuleStore.getRules();
 }
 
+export async function clearLearnedRules(): Promise<void> {
+  await defaultRuleStore.clear();
+}
+
 export async function matchSentence(input: string): Promise<MatchResult> {
   return learner.match(input);
 }

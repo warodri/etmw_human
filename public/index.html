@@ -93,7 +93,36 @@
           </div>
         </section>
 
-        <section class="panel" aria-labelledby="generate-title">
+
+        <section class="panel simple-generate-panel" aria-labelledby="simple-generate-title">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Result</p>
+              <h2 id="simple-generate-title">Generate a sentence</h2>
+              <p class="panel-copy">
+                A random learned rule is selected and filled from its
+                vocabulary arrays.
+              </p>
+            </div>
+            <button class="primary-button" id="simple-generate-button" type="button">
+              Generate a sentence
+            </button>
+          </div>
+
+          <div class="error-banner" id="simple-generate-error" role="alert" hidden></div>
+
+          <div class="generation-output simple-output" id="simple-generate-output" aria-live="polite" hidden>
+            <p class="eyebrow">Generated</p>
+            <p class="generation-sentence" id="simple-generate-sentence"></p>
+            <div class="generation-choices" id="simple-generate-choices"></div>
+            <div class="simple-meta-row">
+              <div class="pattern-strip" id="simple-generate-pattern"></div>
+              <span class="simple-rule" id="simple-generate-rule"></span>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="generate-title" hidden>
           <div class="section-head">
             <div>
               <p class="eyebrow">Step two</p>
@@ -148,6 +177,63 @@
               <p class="eyebrow">Assembled output</p>
               <p class="generation-sentence" id="generation-sentence"></p>
               <div class="generation-choices" id="generation-choices"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel learning-state-panel" aria-labelledby="learning-state-title" hidden>
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Memory</p>
+              <h2 id="learning-state-title">Learning state</h2>
+              <p class="panel-copy">
+                Live view of <code>data/learned-rules.json</code> and
+                <code>data/word-knowledge.json</code>. Reset to start again
+                from a blank slate.
+              </p>
+            </div>
+            <div class="header-actions">
+              <button class="ghost-button" id="refresh-state" type="button">
+                Refresh
+              </button>
+              <button class="danger-button" id="reset-learning" type="button">
+                Reset all learning
+              </button>
+            </div>
+          </div>
+
+          <div class="state-stats">
+            <div class="state-stat">
+              <strong id="state-rule-count">–</strong>
+              <span>sentence rules</span>
+            </div>
+            <div class="state-stat">
+              <strong id="state-knowledge-count">–</strong>
+              <span>knowledge entries</span>
+            </div>
+            <div class="state-stat">
+              <strong id="state-relationship-count">–</strong>
+              <span>direct connections</span>
+            </div>
+          </div>
+
+          <div class="notice notice-success" id="state-notice" hidden></div>
+          <div class="error-banner" id="state-error" role="alert" hidden></div>
+
+          <div class="state-columns">
+            <div class="state-column">
+              <div class="state-column-head">
+                <h3>Sentence rules</h3>
+                <span id="state-rules-meta"></span>
+              </div>
+              <div class="state-list" id="state-rules"></div>
+            </div>
+            <div class="state-column">
+              <div class="state-column-head">
+                <h3>Word knowledge</h3>
+                <span id="state-knowledge-meta"></span>
+              </div>
+              <div class="state-list" id="state-knowledge"></div>
             </div>
           </div>
         </section>

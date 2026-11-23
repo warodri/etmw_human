@@ -6,7 +6,8 @@ import {
   learnOne,
   listRules,
   listVocabularyArrays,
-  matchOne
+  matchOne,
+  resetLearningHandler
 } from "../controllers/learning.controller.js";
 
 export const learningRoutes = Router();
@@ -18,3 +19,4 @@ learningRoutes.post("/match", matchOne);
 learningRoutes.post("/generate", generateOne);
 learningRoutes.post("/generate/random", generateRandom);
 learningRoutes.get("/vocabulary", listVocabularyArrays);
+learningRoutes.post("/reset", resetLearningHandler);

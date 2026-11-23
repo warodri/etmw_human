@@ -6,6 +6,7 @@ import type { LearnedRule } from "../sentence-learning/types.js";
 import type { SentenceGenerator } from "../sentence-learning/sentence-generator.js";
 import { KnowledgeError } from "./errors.js";
 import type { KnowledgeRepository } from "./knowledge-repository.js";
+import { KnowledgeResolver } from "./knowledge-resolver.js";
 import type {
   KnowledgeGenerationOptions,
   KnowledgeGenerationResult,
@@ -112,13 +113,18 @@ function rulePreference(
 }
 
 export class KnowledgeGenerator {
+  private readonly resolver: KnowledgeResolver;
+
   constructor(
-    private readonly repository: KnowledgeRepository,
+    repository: KnowledgeRepository,
     private readonly rulesProvider: () => Promise<LearnedRule[]>,
     private readonly generator: SentenceGenerator,
     private readonly vocabulary: VocabularyIndex = vocabularyIndex,
-    private readonly cap: number = getPatternCap()
-  ) {}
+    private readonly cap: number = getPatternCap(),
+    resolver?: KnowledgeResolver
+  ) {
+    this.resolver = resolver ?? new KnowledgeResolver(repository);
+  }
 
   async generate(
     word: string,
@@ -151,9 +157,9 @@ export class KnowledgeGenerator {
       );
     }
 
-    const knowledgeEntries = await this.repository.getByWord(focusWord);
+    const resolvedEntries = await this.resolver.resolve(focusWord);
 
-    if (knowledgeEntries.length === 0) {
+    if (resolvedEntries.length === 0) {
       return {
         focusWord,
         sentences: [],
@@ -161,15 +167,21 @@ export class KnowledgeGenerator {
       };
     }
 
-    const withRelationships = knowledgeEntries.filter(
-      (entry) => entry.related.length > 0
+    const resolutionWarnings = Array.from(
+      new Set(resolvedEntries.flatMap((entry) => entry.warnings))
+    );
+    const withRelationships = resolvedEntries.filter(
+      (entry) => entry.effective.length > 0
     );
 
     if (withRelationships.length === 0) {
       return {
         focusWord,
         sentences: [],
-        reason: `No related words are stored for "${focusWord}".`
+        reason: `No related words are stored for "${focusWord}".`,
+        ...(resolutionWarnings.length > 0
+          ? { resolutionWarnings }
+          : {})
       };
     }
 
@@ -184,7 +196,10 @@ export class KnowledgeGenerator {
         sentences: [],
         reason: options.ruleId
           ? `Learned rule "${options.ruleId}" was not found.`
-          : "No learned sentence rules are available."
+          : "No learned sentence rules are available.",
+        ...(resolutionWarnings.length > 0
+          ? { resolutionWarnings }
+          : {})
       };
     }
 
@@ -192,118 +207,155 @@ export class KnowledgeGenerator {
     const seenSentences = new Set<string>();
     let candidateIndex = 0;
     let lastError: string | undefined;
+    let focusHasCatalogueCategory = false;
 
     for (const knowledge of withRelationships) {
-      for (const related of knowledge.related) {
-        const orderedRules = [...rules].sort(
-          (left, right) =>
-            rulePreference(left, focusWord, related.word) -
-            rulePreference(right, focusWord, related.word)
-        );
+      const focusCategories: VocabularyCategory[] =
+        knowledge.category === "name"
+          ? this.vocabulary.categoriesFor(focusWord)
+          : [knowledge.category];
 
-        for (const rule of orderedRules) {
-          const focusPositions = positionsOf(
-            rule.pattern,
-            knowledge.category
-          );
-          const relatedPositions = positionsOf(
-            rule.pattern,
-            related.category
-          );
-          const positionPairs: Array<{
-            focusPosition: number;
-            relatedPosition: number;
-          }> = [];
+      if (focusCategories.length > 0) {
+        focusHasCatalogueCategory = true;
+      }
 
-          for (const focusPosition of focusPositions) {
-            for (const relatedPosition of relatedPositions) {
-              if (focusPosition !== relatedPosition) {
-                positionPairs.push({ focusPosition, relatedPosition });
-              }
-            }
-          }
+      for (const related of knowledge.effective) {
+        if (related.category === "system") {
+          continue;
+        }
 
-          positionPairs.sort((left, right) => {
-            const leftFollows =
-              left.relatedPosition > left.focusPosition ? 0 : 1;
-            const rightFollows =
-              right.relatedPosition > right.focusPosition ? 0 : 1;
-            return leftFollows - rightFollows;
-          });
+        const relatedCategories: VocabularyCategory[] =
+          related.category === "name"
+            ? this.vocabulary.categoriesFor(related.word)
+            : [related.category];
 
-          const exampleWords = preferredExampleWords(
-            rule,
-            focusWord,
-            related.word,
-            this.vocabulary,
-            this.cap
-          );
+        if (relatedCategories.length === 0) {
+          continue;
+        }
 
-          for (const pair of positionPairs) {
-            const candidateSeed =
-              options.seed === undefined
-                ? undefined
-                : options.seed + candidateIndex;
-            candidateIndex += 1;
-            const pinned = new Map<number, string>([
-              [pair.focusPosition, focusWord],
-              [pair.relatedPosition, related.word]
-            ]);
+        for (const focusCategory of focusCategories) {
+          for (const relatedCategory of relatedCategories) {
+            const orderedRules = [...rules].sort(
+              (left, right) =>
+                rulePreference(left, focusWord, related.word) -
+                rulePreference(right, focusWord, related.word)
+            );
 
-            if (exampleWords) {
-              exampleWords.forEach((word, index) => {
-                if (!pinned.has(index)) {
-                  pinned.set(index, word);
+            for (const rule of orderedRules) {
+              const focusPositions = positionsOf(rule.pattern, focusCategory);
+              const relatedPositions = positionsOf(
+                rule.pattern,
+                relatedCategory
+              );
+              const positionPairs: Array<{
+                focusPosition: number;
+                relatedPosition: number;
+              }> = [];
+
+              for (const focusPosition of focusPositions) {
+                for (const relatedPosition of relatedPositions) {
+                  if (focusPosition !== relatedPosition) {
+                    positionPairs.push({ focusPosition, relatedPosition });
+                  }
                 }
-              });
-            }
-
-            try {
-              const result = this.generator.generateWithPinned(rule, {
-                ...(candidateSeed === undefined ? {} : { seed: candidateSeed }),
-                pinned
-              });
-
-              if (seenSentences.has(result.sentence)) {
-                continue;
               }
 
-              seenSentences.add(result.sentence);
-              sentences.push({
-                sentence: result.sentence,
-                ruleId: rule.id,
-                pattern: [...result.pattern],
-                words: [...result.chosenWords],
-                relatedWord: related.word,
-                relatedCategory: related.category,
-                source: "learned-relationship"
+              positionPairs.sort((left, right) => {
+                const leftFollows =
+                  left.relatedPosition > left.focusPosition ? 0 : 1;
+                const rightFollows =
+                  right.relatedPosition > right.focusPosition ? 0 : 1;
+                return leftFollows - rightFollows;
               });
 
-              if (sentences.length >= maxSentences) {
-                return {
-                  focusWord,
-                  sentences
-                };
+              const exampleWords = preferredExampleWords(
+                rule,
+                focusWord,
+                related.word,
+                this.vocabulary,
+                this.cap
+              );
+
+              for (const pair of positionPairs) {
+                const candidateSeed =
+                  options.seed === undefined
+                    ? undefined
+                    : options.seed + candidateIndex;
+                candidateIndex += 1;
+                const pinned = new Map<number, string>([
+                  [pair.focusPosition, focusWord],
+                  [pair.relatedPosition, related.word]
+                ]);
+
+                if (exampleWords) {
+                  exampleWords.forEach((word, index) => {
+                    if (!pinned.has(index)) {
+                      pinned.set(index, word);
+                    }
+                  });
+                }
+
+                try {
+                  const result = this.generator.generateWithPinned(rule, {
+                    ...(candidateSeed === undefined
+                      ? {}
+                      : { seed: candidateSeed }),
+                    pinned
+                  });
+
+                  if (seenSentences.has(result.sentence)) {
+                    continue;
+                  }
+
+                  seenSentences.add(result.sentence);
+                  sentences.push({
+                    sentence: result.sentence,
+                    ruleId: rule.id,
+                    pattern: [...result.pattern],
+                    words: [...result.chosenWords],
+                    relatedWord: related.word,
+                    relatedCategory: related.category,
+                    relatedSlotCategory: relatedCategory,
+                    relatedOrigin: related.origin,
+                    ...(related.inheritedFrom
+                      ? { inheritedFrom: related.inheritedFrom }
+                      : {}),
+                    ...(related.path ? { path: [...related.path] } : {}),
+                    source: "learned-relationship"
+                  });
+
+                  if (sentences.length >= maxSentences) {
+                    return {
+                      focusWord,
+                      sentences,
+                      ...(resolutionWarnings.length > 0
+                        ? { resolutionWarnings }
+                        : {})
+                    };
+                  }
+                } catch (error) {
+                  lastError =
+                    error instanceof Error
+                      ? error.message
+                      : "Generation failed.";
+                }
               }
-            } catch (error) {
-              lastError =
-                error instanceof Error ? error.message : "Generation failed.";
             }
           }
         }
       }
     }
 
+    const reason = !focusHasCatalogueCategory
+      ? `"${focusWord}" has no compatible catalogue category, so no learned sentence slot can host it.`
+      : lastError ??
+        `No learned rule can host "${focusWord}" with one of its stored relationships.`;
+
     return {
       focusWord,
       sentences,
-      ...(sentences.length === 0
-        ? {
-            reason:
-              lastError ??
-              `No learned rule can host "${focusWord}" with one of its stored relationships.`
-          }
-        : {})
+      ...(sentences.length === 0 ? { reason } : {}),
+      ...(resolutionWarnings.length > 0 ? { resolutionWarnings } : {})
     };
   }
 }

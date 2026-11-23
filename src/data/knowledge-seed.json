@@ -30,8 +30,14 @@
       "category": "nouns",
       "observationId": "seed:direct:sky:nouns",
       "related": [
-        { "word": "blue", "category": "adjectives" },
-        { "word": "beautiful", "category": "adjectives" }
+        {
+          "word": "blue",
+          "category": "adjectives"
+        },
+        {
+          "word": "beautiful",
+          "category": "adjectives"
+        }
       ]
     },
     {
@@ -39,9 +45,18 @@
       "category": "nouns",
       "observationId": "seed:direct:dog:nouns",
       "related": [
-        { "word": "animal", "category": "nouns" },
-        { "word": "beautiful", "category": "adjectives" },
-        { "word": "dangerous", "category": "adjectives" }
+        {
+          "word": "animal",
+          "category": "nouns"
+        },
+        {
+          "word": "beautiful",
+          "category": "adjectives"
+        },
+        {
+          "word": "dangerous",
+          "category": "adjectives"
+        }
       ]
     },
     {
@@ -49,7 +64,10 @@
       "category": "nouns",
       "observationId": "seed:direct:cat:nouns",
       "related": [
-        { "word": "small", "category": "adjectives" }
+        {
+          "word": "small",
+          "category": "adjectives"
+        }
       ]
     },
     {
@@ -57,7 +75,10 @@
       "category": "nouns",
       "observationId": "seed:direct:house:nouns",
       "related": [
-        { "word": "big", "category": "adjectives" }
+        {
+          "word": "big",
+          "category": "adjectives"
+        }
       ]
     },
     {
@@ -65,7 +86,10 @@
       "category": "nouns",
       "observationId": "seed:direct:car:nouns",
       "related": [
-        { "word": "fast", "category": "adjectives" }
+        {
+          "word": "fast",
+          "category": "adjectives"
+        }
       ]
     },
     {
@@ -73,7 +97,10 @@
       "category": "nouns",
       "observationId": "seed:direct:water:nouns",
       "related": [
-        { "word": "cold", "category": "adjectives" }
+        {
+          "word": "cold",
+          "category": "adjectives"
+        }
       ]
     },
     {
@@ -81,7 +108,10 @@
       "category": "nouns",
       "observationId": "seed:direct:sun:nouns",
       "related": [
-        { "word": "bright", "category": "adjectives" }
+        {
+          "word": "bright",
+          "category": "adjectives"
+        }
       ]
     },
     {
@@ -89,7 +119,10 @@
       "category": "nouns",
       "observationId": "seed:direct:teacher:nouns",
       "related": [
-        { "word": "happy", "category": "adjectives" }
+        {
+          "word": "happy",
+          "category": "adjectives"
+        }
       ]
     },
     {
@@ -97,7 +130,74 @@
       "category": "nouns",
       "observationId": "seed:direct:computer:nouns",
       "related": [
-        { "word": "new", "category": "adjectives" }
+        {
+          "word": "new",
+          "category": "adjectives"
+        }
+      ]
+    },
+    {
+      "word": "building",
+      "category": "nouns",
+      "observationId": "seed:direct:building:nouns",
+      "related": [
+        {
+          "word": "beautiful",
+          "category": "adjectives"
+        }
+      ]
+    },
+    {
+      "word": "hotel",
+      "category": "nouns",
+      "observationId": "seed:direct:hotel:nouns",
+      "related": [
+        {
+          "word": "big",
+          "category": "adjectives"
+        },
+        {
+          "word": "building",
+          "category": "nouns"
+        },
+        {
+          "word": "building",
+          "category": "system"
+        }
+      ]
+    },
+    {
+      "word": "hilton",
+      "category": "name",
+      "observationId": "seed:direct:hilton:name",
+      "related": [
+        {
+          "word": "tall",
+          "category": "adjectives"
+        },
+        {
+          "word": "hotel",
+          "category": "system"
+        },
+        {
+          "word": "paris",
+          "category": "name"
+        },
+        {
+          "word": "building",
+          "category": "system"
+        }
+      ]
+    },
+    {
+      "word": "paris",
+      "category": "name",
+      "observationId": "seed:direct:paris:name",
+      "related": [
+        {
+          "word": "woman",
+          "category": "nouns"
+        }
       ]
     }
   ]
